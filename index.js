@@ -29,7 +29,10 @@ async function run() {
         await client.connect();
         const toysCollection = client.db('playSporta').collection('toys');
         
-        
+        app.get('/products', async(req, res) => {
+            const result = await toysCollection.find().toArray();
+            res.send(result);
+        })
 
 
         // Send a ping to confirm a successful connection
