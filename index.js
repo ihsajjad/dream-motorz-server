@@ -8,10 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-console.log(process.env.DB_USER);
-console.log(process.env.DB_PASS);
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.hbiibcp.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -29,8 +28,18 @@ async function run() {
         await client.connect();
         const toysCollection = client.db('playSporta').collection('toys');
         
+        // This method will send all data
         app.get('/products', async(req, res) => {
             const result = await toysCollection.find().toArray();
+            res.send(result);
+        })
+
+        //This method will send single data
+        app.get('/products/:id', async(req, res)=> {
+            const id = req.params.id;
+            console.log(id);
+            const query = {_id: new ObjectId(id)};
+            const result = await toysCollection.findOne(query);
             res.send(result);
         })
 
