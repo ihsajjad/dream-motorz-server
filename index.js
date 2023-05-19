@@ -49,7 +49,7 @@ async function run() {
             if (req.query?.email) {
                 query = { sellerEmail: req.query.email };
             }
-            console.log(query);
+            
             const result = await toysCollection.find(query).toArray();
             res.send(result)
         })
@@ -57,6 +57,25 @@ async function run() {
         app.post('/products', async (req, res) => {
             const newToy = req.body;
             const result = await toysCollection.insertOne(newToy);
+            res.send(result);
+        })
+
+        // Put method to update data
+        app.put('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedToy = req.body;
+            console.log(updatedToy);
+
+            const filter = { _id: new ObjectId(id) };
+
+            const {availableQuantity, photo, price, toyDescription, toyName, rating} = updatedToy;
+
+            const updateToy = {
+                $set: {availableQuantity, photo, price, toyDescription, toyName, rating} 
+            }
+
+            const options = { upsert: true };
+            const result = await toysCollection.updateOne(filter, updateToy, options);
             res.send(result);
         })
 
