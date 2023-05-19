@@ -28,16 +28,31 @@ async function run() {
         const toysCollection = client.db('playSporta').collection('toys');
 
 
+        
+        // app.get('/products', async (req, res) => {
+        //     const result = await toysCollection.find().toArray();
+        //     res.send(result);
+        // })
+
         // This method will send all data
         app.get('/products', async (req, res) => {
-            const result = await toysCollection.find().toArray();
+            const searchText = req.query.search;
+            let query = {};
+            if(req.query?.search){
+                const regexPattern = new RegExp(`.*${searchText}.*`, 'i');
+    
+                query = { toyName: regexPattern };
+            }
+            console.log(query);
+
+            const result = await toysCollection.find(query).toArray();
             res.send(result);
         })
 
         //This method will send single data
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
+            
             const query = { _id: new ObjectId(id) };
             const result = await toysCollection.findOne(query);
             res.send(result);
@@ -64,7 +79,6 @@ async function run() {
         app.put('/products/:id', async (req, res) => {
             const id = req.params.id;
             const updatedToy = req.body;
-            console.log(updatedToy);
 
             const filter = { _id: new ObjectId(id) };
 
@@ -97,12 +111,10 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-
 app.get('/', (req, res) => {
-    res.send('play sporta server is running...');
+    res.send('dream motorz server is running...');
 })
 
 app.listen(port, () => {
-    console.log(`play sporta server is running on port ${port}`)
+    console.log(`dream motorz server is running on port ${port}`)
 })
