@@ -45,7 +45,6 @@ async function run() {
             res.send(result);
         })
 
-          
 
         //This method will send single data
         app.get('/products/:id', async (req, res) => {
@@ -73,17 +72,9 @@ async function run() {
             res.send(result)
         })
 
-        // app.get('/toys', async (req, res) => {
-        //     let query = {};
-            
-        //     console.log(query);
-            
-        //     const result = await toysCollection.find(query).toArray();
-        //     res.send(result)
-        // })
-
-       
+        
           
+
 
         app.post('/products', async (req, res) => {
             const newToy = req.body;
