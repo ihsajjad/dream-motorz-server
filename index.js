@@ -29,10 +29,7 @@ async function run() {
 
 
         
-        // app.get('/products', async (req, res) => {
-        //     const result = await toysCollection.find().toArray();
-        //     res.send(result);
-        // })
+        
 
         // This method will send all data
         app.get('/products', async (req, res) => {
@@ -43,11 +40,12 @@ async function run() {
     
                 query = { toyName: regexPattern };
             }
-            console.log(query);
 
             const result = await toysCollection.find(query).toArray();
             res.send(result);
         })
+
+          
 
         //This method will send single data
         app.get('/products/:id', async (req, res) => {
@@ -64,10 +62,28 @@ async function run() {
             if (req.query?.email) {
                 query = { sellerEmail: req.query.email };
             }
-            
+            if (req.query?.category) {
+                const regexPattern = new RegExp(`.*${req.query.category}.*`, 'i');
+    
+                query = { subCategory: regexPattern };
+            }
+
+            console.log(query)
             const result = await toysCollection.find(query).toArray();
             res.send(result)
         })
+
+        // app.get('/toys', async (req, res) => {
+        //     let query = {};
+            
+        //     console.log(query);
+            
+        //     const result = await toysCollection.find(query).toArray();
+        //     res.send(result)
+        // })
+
+       
+          
 
         app.post('/products', async (req, res) => {
             const newToy = req.body;
@@ -82,10 +98,10 @@ async function run() {
 
             const filter = { _id: new ObjectId(id) };
 
-            const {availableQuantity, photo, price, toyDescription, toyName, rating} = updatedToy;
+            const {availableQuantity, photo, price, toyDescription, toyName, rating, subCategory} = updatedToy;
 
             const updateToy = {
-                $set: {availableQuantity, photo, price, toyDescription, toyName, rating} 
+                $set: {availableQuantity, photo, price, toyDescription, toyName, rating, subCategory} 
             }
 
             const options = { upsert: true };
